@@ -8,7 +8,7 @@
 require 'vendor/autoload.php';
 ```
 
-##使用
+## 使用
 1. 导入 sql/sql.sql 脚本，创建数据表
 2. 手动添加一个消费者 
 ```PHP
