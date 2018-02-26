@@ -1,6 +1,6 @@
 {
     "name": "huangbin2018/my_dbmq",
-    "description": "In order to study composer",
+    "description": "mysql实现的简单消息队列",
     "license": "MIT",
     "authors": [
         {
