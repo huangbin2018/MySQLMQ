@@ -3,7 +3,7 @@
 
 ## 安装
 > composer require huangbin2018/my_dbmq
-引入 
+## 引入 
 ```PHP
 require 'vendor/autoload.php';
 ```
