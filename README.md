@@ -4,19 +4,19 @@
 ## 安装
 > composer require huangbin2018/my_dbmq
 引入 
-```
+```PHP
 require 'vendor/autoload.php';
 ```
 
 ##使用
 1. 导入 sql/sql.sql 脚本，创建数据表
 2. 手动添加一个消费者 
-```
+```PHP
 -- 添加测试 消费者 test_consumer_key
 INSERT INTO `mq_consumer` (`consumer_key`, `channel`, `max_sys_load_average`) VALUES ('test_consumer_key', 'test_channel', 10);
 ```
 3. 消息生产者
-```
+```PHP
 require dirname(__DIR__) .'/vendor/autoload.php';
 use MyDBMQ\Mysql\DBMQPublisher;
 
@@ -29,7 +29,7 @@ $tag = 'test_tag';
 $publisher->send($tag,$key,$body);
 ```
 4. 消息消费者
-```
+```PHP
 require dirname(__DIR__) .'/vendor/autoload.php';
 use MyDBMQ\Mysql\DBMQConsumer;
 use MyDBMQ\Mysql\DBMQMessageConsumResponse;
