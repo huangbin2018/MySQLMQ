@@ -1,0 +1,60 @@
+CREATE TABLE `mq_consumer` (
+  `consumerid` int(11) NOT NULL AUTO_INCREMENT,
+  `consumer_key` varchar(64) NOT NULL DEFAULT '' COMMENT '消费者key',
+  `channel` varchar(64) NOT NULL DEFAULT '' COMMENT '渠道',
+  `tag_type` tinyint(3) NOT NULL DEFAULT '0' COMMENT 'tag类型(0全部，1自选)',
+  `processid` int(11) DEFAULT '0' COMMENT '进程id',
+  `create_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建日期',
+  `update_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间戳',
+  `status` tinyint(4) DEFAULT '0' COMMENT '0等待运行，1，运行中，2停止',
+  `max_sys_load_average` decimal(18,4) DEFAULT '0.5000' COMMENT '最大系统负载率',
+  PRIMARY KEY (`consumerid`),
+  KEY `consumer_key` (`consumer_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='消息队列消费者表';
+
+CREATE TABLE `mq_consumer_tag` (
+  `ct_id` int(11) NOT NULL AUTO_INCREMENT,
+  `consumer_key` varchar(64) NOT NULL DEFAULT '' COMMENT '消费者key',
+  `channel` varchar(64) NOT NULL DEFAULT '' COMMENT '渠道',
+  `tag` varchar(64) NOT NULL DEFAULT '',
+  `create_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建日期',
+  PRIMARY KEY (`ct_id`),
+  UNIQUE KEY `channel_tag` (`channel`,`tag`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='消费者tag表';
+
+
+CREATE TABLE `mq_message` (
+  `messageid` bigint(18) NOT NULL AUTO_INCREMENT,
+  `channel` varchar(64) NOT NULL DEFAULT '' COMMENT '渠道',
+  `tag` varchar(64) NOT NULL DEFAULT '' COMMENT 'tag',
+  `key` varchar(128) NOT NULL DEFAULT '' COMMENT '消息key',
+  `body` longtext NOT NULL COMMENT '消息体',
+  `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '状态（0待消费，1消费失败，消费成功会写入到mq_message_log表）',
+  `exception_times` int(11) NOT NULL DEFAULT '0' COMMENT '异常次数',
+  `fail_times` int(11) NOT NULL DEFAULT '0' COMMENT '失败次数',
+  `note` text NOT NULL COMMENT '备注',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '时间戳',
+  `create_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建日期',
+  PRIMARY KEY (`messageid`),
+  KEY `tag` (`tag`),
+  KEY `key` (`key`),
+  KEY `status` (`status`),
+  KEY `timestamp` (`timestamp`),
+  KEY `channel` (`channel`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='消息表';
+
+
+CREATE TABLE `mq_message_log` (
+  `ml_id` int(11) NOT NULL AUTO_INCREMENT,
+  `channel` varchar(64) DEFAULT NULL,
+  `tag` varchar(64) DEFAULT NULL,
+  `key` varchar(128) DEFAULT NULL,
+  `body` longtext,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ml_id`),
+  KEY `key` (`key`),
+  KEY `timestamp` (`timestamp`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='消息记录表';
+
+-- 添加测试 消费者 test_consumer_key
+INSERT INTO `mq_consumer` (`consumer_key`, `channel`, `max_sys_load_average`) VALUES ('test_consumer_key', 'test_channel', 10);
